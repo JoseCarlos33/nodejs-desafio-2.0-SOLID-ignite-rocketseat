@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { User } from "../../model/User";
 import { IUsersRepository, ICreateUserDTO } from "../IUsersRepository";
+import { v4 as uuidV4 } from "uuid";
 
 class UsersRepository implements IUsersRepository {
   private users: User[];
@@ -19,23 +21,43 @@ class UsersRepository implements IUsersRepository {
   }
 
   create({ name, email }: ICreateUserDTO): User {
-    // Complete aqui
+    const newUser = new User()
+
+    Object.assign(newUser, {
+      name,
+      email,
+      created_at: new Date(),
+      updated_at: new Date()
+    })
+
+    this.users.push(newUser);
+
+    return newUser;
   }
 
   findById(id: string): User | undefined {
-    // Complete aqui
+    const existentUser = this.users.find(user => user.id === id);
+
+    return existentUser;
   }
 
   findByEmail(email: string): User | undefined {
-    // Complete aqui
+    const existentUser = this.users.find(user => user.email === email);
+
+    return existentUser;
   }
 
   turnAdmin(receivedUser: User): User {
-    // Complete aqui
+    const formattedUsers = this.users.map(user => user.id === receivedUser.id ? { ...user, admin: true} : user);
+    this.users = formattedUsers;
+    const currentUser = this.users.find(user => user.id === receivedUser.id);
+
+    return currentUser;
   }
 
   list(): User[] {
-    // Complete aqui
+    const all = this.users;
+    return all;
   }
 }
 
